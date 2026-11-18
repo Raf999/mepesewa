@@ -7,6 +7,7 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\FinancialAccountController;
 use App\Http\Controllers\WorkspaceController;
+use App\Http\Controllers\CategoriesController;
 
 Route::get('/', function () {
     return auth()->check()
@@ -39,4 +40,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/accounts', [FinancialAccountController::class, 'index'])->name('accounts.index');
     Route::post('/accounts', [FinancialAccountController::class, 'store'])->name('accounts.store');
     Route::delete('/accounts/{account}', [FinancialAccountController::class, 'destroy'])->name('accounts.destroy');
+
+    // Categories
+    Route::get('/categories', [CategoriesController::class, 'index'])->name('categories.index');
+    Route::post('/categories', [CategoriesController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [CategoriesController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+
 });

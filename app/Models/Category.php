@@ -3,15 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Category extends Model
 {
-    protected $fillable = ['name', 'type', 'is_active'];
+    protected $fillable = [
+        'workspace_id',
+        'name',
+        'type',
+        'is_active',
+    ];
 
-    public function budgets()
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    public function workspace(): BelongsTo
     {
-        return $this->belongsToMany(Budget::class, 'budget_category')
-            ->withTimestamps();
+        return $this->belongsTo(Workspace::class);
     }
 }
-

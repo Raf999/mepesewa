@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('workspace_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('type')->default('expense'); // expense or income
             $table->boolean('is_active')->default(true);

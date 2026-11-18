@@ -36,7 +36,20 @@ export default function Index() {
     const isExpense = data.type === 'expense';
 
     // Filter categories to only show income or expense categories matching the active tab
-    const filteredCategories = categories?.filter(c => !c.type || c.type === data.type) || [];
+        // Find the selected account to detect its workspace_id
+    const activeAccountId = isIncome ? data.destination_account_id : data.source_account_id;
+    const selectedAccount = accounts?.find(a => String(a.id) === String(activeAccountId));
+    const activeWorkspaceId = data.workspace_id || selectedAccount?.workspace_id;
+
+    // Filter categories by transaction type AND selected account's workspace
+    const filteredCategories = categories?.filter(c => {
+        const matchesType = !c.type || c.type === data.type;
+        const matchesWorkspace = activeWorkspaceId
+            ? String(c.workspace_id) === String(activeWorkspaceId)
+            : true;
+        return matchesType && matchesWorkspace;
+    }) || [];
+
 
     const handleTypeChange = (newType) => {
         setData(prev => {
@@ -206,6 +219,7 @@ export default function Index() {
                                             setData(prev => ({
                                                 ...prev,
                                                 source_account_id: accId,
+                                                category_id: '', // <-- Resets category when source account changes
                                                 ...(acc?.currency_id ? { currency_id: acc.currency_id } : {})
                                             }));
                                         }}
@@ -237,6 +251,7 @@ export default function Index() {
                                             setData(prev => ({
                                                 ...prev,
                                                 destination_account_id: accId,
+                                                category_id: '', // <-- Resets category when destination account changes
                                                 ...(!isTransfer && acc?.currency_id ? { currency_id: acc.currency_id } : {})
                                             }));
                                         }}
@@ -282,9 +297,12 @@ export default function Index() {
                                     <select
                                         value={data.category_id}
                                         onChange={e => setData('category_id', e.target.value)}
-                                        className="w-full rounded-xl border border-gray-200 p-3 text-sm focus:border-emerald-600 focus:outline-none"
+                                        disabled={!activeWorkspaceId}
+                                        className="w-full rounded-xl border border-gray-200 p-3 text-sm focus:border-emerald-600 focus:outline-none disabled:bg-gray-50 disabled:text-gray-400"
                                     >
-                                        <option value="">Select category</option>
+                                        <option value="">
+                                            {activeWorkspaceId ? 'Select category' : 'Select an account first'}
+                                        </option>
                                         {filteredCategories.map(c => (
                                             <option key={c.id} value={c.id}>{c.name}</option>
                                         ))}
@@ -292,6 +310,7 @@ export default function Index() {
                                     {errors.category_id && <p className="mt-1 text-sm text-red-600">{errors.category_id}</p>}
                                 </div>
                             )}
+
 
                             {/* Description */}
                             <div>

@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use App\Models\Workspace;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
@@ -19,15 +20,28 @@ class CategorySeeder extends Seeder
             ['name' => 'Housing', 'type' => 'expense'],
             ['name' => 'Utilities', 'type' => 'expense'],
             ['name' => 'Entertainment', 'type' => 'expense'],
+
             // Income categories
             ['name' => 'Salary', 'type' => 'income'],
             ['name' => 'Business', 'type' => 'income'],
             ['name' => 'Freelance', 'type' => 'income'],
         ];
 
-        foreach ($categories as $data) {
-            Category::updateOrCreate(['name' => $data['name'], 'type' => $data['type']], $data);
+        $workspaces = Workspace::all();
+
+        foreach ($workspaces as $workspace) {
+            foreach ($categories as $data) {
+                Category::updateOrCreate(
+                    [
+                        'workspace_id' => $workspace->id,
+                        'name' => $data['name'],
+                        'type' => $data['type'],
+                    ],
+                    [
+                        'is_active' => true,
+                    ]
+                );
+            }
         }
     }
 }
-

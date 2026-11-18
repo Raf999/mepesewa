@@ -25,9 +25,10 @@ class DatabaseSeeder extends Seeder
         // Run core seeders
         $this->call([
             CurrencySeeder::class,
+            WorkspaceSeeder::class,
             CategorySeeder::class,
             PaymentMethodSeeder::class,
-            WorkspaceSeeder::class,
+            
         ]);
     }
 }

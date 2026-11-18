@@ -10,6 +10,8 @@ use App\Models\Category;
 use App\Models\PaymentMethod;
 use App\Models\Currency;
 use Inertia\Inertia;
+use App\Models\Workspace;
+
 
 class TransactionController extends Controller
 {
@@ -30,13 +32,15 @@ class TransactionController extends Controller
             ->paginate(15)
             ->toArray();
 
-        $accounts       = FinancialAccount::with('currency')->orderBy('name')->get(['id', 'name', 'currency_id']);
-        $categories     = Category::orderBy('name')->get(['id', 'name', 'type']);
+        $workspaces     = Workspace::orderBy('name')->get(['id', 'name']);
+        $accounts       = FinancialAccount::with('currency')->where('is_active', true)->orderBy('name')->get(['id', 'workspace_id', 'name', 'currency_id']);
+        $categories     = Category::where('is_active', true)->orderBy('name')->get(['id', 'workspace_id', 'name', 'type']);
         $paymentMethods = PaymentMethod::orderBy('name')->get(['id', 'name']);
         $currencies     = Currency::orderBy('code')->get(['id', 'code', 'name']);
 
         return Inertia::render('Transactions/Index', [
             'transactions'    => $transactions,
+            'workspaces'      => $workspaces,
             'accounts'        => $accounts,
             'categories'      => $categories,
             'paymentMethods'  => $paymentMethods,
