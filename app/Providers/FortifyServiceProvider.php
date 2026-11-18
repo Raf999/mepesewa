@@ -22,24 +22,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind Fortify view responses for Inertia
-        $this->app->singleton(\Laravel\Fortify\Contracts\RegisterViewResponse::class, function ($app) {
-            return new class {
-                public function toResponse($request)
-                {
-                    return \Inertia\Inertia::render('Auth/Register');
-                }
-            };
-        });
-
-        $this->app->singleton(\Laravel\Fortify\Contracts\LoginViewResponse::class, function ($app) {
-            return new class {
-                public function toResponse($request)
-                {
-                    return \Inertia\Inertia::render('Auth/Login');
-                }
-            };
-        });
+        // No custom bindings needed; use default Fortify view handling.
     }
 
     /**
