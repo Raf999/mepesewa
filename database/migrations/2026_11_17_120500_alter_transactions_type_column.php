@@ -1,28 +1,68 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->enum('type', ['income', 'expense', 'transfer'])->default('expense')->change();
-        });
+        if (DB::getDriverName() === 'pgsql') {
+
+            // Remove the original enum CHECK constraint.
+            DB::statement(
+                'ALTER TABLE transactions
+                 DROP CONSTRAINT IF EXISTS transactions_type_check'
+            );
+
+            // Convert the existing column to VARCHAR.
+            DB::statement(
+                'ALTER TABLE transactions
+                 ALTER COLUMN type TYPE VARCHAR(20)
+                 USING type::VARCHAR(20)'
+            );
+
+            // Set the default value.
+            DB::statement(
+                "ALTER TABLE transactions
+                 ALTER COLUMN type SET DEFAULT 'expense'"
+            );
+
+        } else {
+
+            Schema::table('transactions', function ($table) {
+                $table->string('type', 20)
+                    ->default('expense')
+                    ->change();
+            });
+
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->enum('type', ['income', 'expense'])->default('expense')->change();
-        });
+        if (DB::getDriverName() === 'pgsql') {
+
+            DB::statement(
+                'ALTER TABLE transactions
+                 DROP CONSTRAINT IF EXISTS transactions_type_check'
+            );
+
+            DB::statement(
+                "ALTER TABLE transactions
+                 ADD CONSTRAINT transactions_type_check
+                 CHECK (type IN ('income', 'expense'))"
+            );
+
+        } else {
+
+            Schema::table('transactions', function ($table) {
+                $table->enum('type', ['income', 'expense'])
+                    ->change();
+            });
+
+        }
     }
 };
