@@ -36,29 +36,20 @@ echo "==> Database migrations completed successfully."
 # 3. Seed core application data
 # ==========================================
 
-echo "==> Checking core seeds..."
-
-php <<'PHP' || true
-<?php
-
-require 'vendor/autoload.php';
-
-$app = require 'bootstrap/app.php';
-
-$app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-if (\App\Models\Currency::count() === 0) {
-    echo "Seeding initial data..." . PHP_EOL;
-
-    \Illuminate\Support\Facades\Artisan::call('db:seed', [
-        '--force' => true,
-    ]);
-
-    echo \Illuminate\Support\Facades\Artisan::output();
-}
-
-echo "==> Core seed check completed." . PHP_EOL;
-PHP
+#   echo "==> Checking core seeds..."
+#
+#   php <<'PHP' || true
+#   <?php
+#   require 'vendor/autoload.php';
+#   $app = require 'bootstrap/app.php';
+#   $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+#   if (\App\Models\Currency::count() === 0) {
+#       echo "Seeding initial data..." . PHP_EOL;
+#       \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+#       echo \Illuminate\Support\Facades\Artisan::output();
+#   }
+#   echo "==> Core seed check completed." . PHP_EOL;
+#   PHP
 
 # ==========================================
 # 4. Clear and rebuild Laravel caches
