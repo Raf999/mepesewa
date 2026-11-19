@@ -23,6 +23,15 @@ $request = Request::capture();
 
 $response = $kernel->handle($request);
 
+error_log('MEPESEWA RESPONSE DIAGNOSTICS: ' . json_encode([
+    'status' => $response->getStatusCode(),
+    'content_length' => strlen($response->getContent()),
+    'headers' => $response->headers->all(),
+    'headers_sent' => headers_sent(),
+    'output_buffer_level' => ob_get_level(),
+    'output_buffering' => ini_get('output_buffering'),
+]));
+
 $response->sendContent();
 
 $kernel->terminate($request, $response);
