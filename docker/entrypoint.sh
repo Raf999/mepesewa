@@ -72,6 +72,9 @@ php artisan view:cache
 # 5. Start PHP-FPM and Nginx
 # ==========================================
 
+echo "==> Testing PHP execution..."
+php -r 'echo "PHP_EXECUTION_OK\n";'
+
 echo "==> Starting PHP-FPM..."
 
 php-fpm -D
