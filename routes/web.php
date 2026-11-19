@@ -12,10 +12,17 @@ Route::get('/ping', function () {
 });
 
 Route::get('/diagnostic', function () {
-    return response()->json([
-        'laravel' => app()->version(),
-        'environment' => app()->environment(),
-        'base_path' => base_path(),
-        'status' => 'working',
-    ]);
+    try {
+        return response()->json([
+            'laravel' => app()->version(),
+            'php' => PHP_VERSION,
+            'environment' => app()->environment(),
+            'base_path' => base_path(),
+            'routes_loaded' => true,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 });
