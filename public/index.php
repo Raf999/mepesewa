@@ -23,6 +23,8 @@ $request = Request::capture();
 
 $response = $kernel->handle($request);
 
+$response->sendHeaders();
+
 $response->sendContent();
 
 $kernel->terminate($request, $response);
